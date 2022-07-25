@@ -1,0 +1,13 @@
+{
+  "information": {
+    "name": "ase-json",
+    "description": "JSON class with stringify and parse",
+    "license": "GNU General Public License v3.0",
+    "author:name": "JuanDAC",
+    "author:email": "juanavila12.0308@gmail.com",
+    "author:url": "https://www.linkedin.com/in/juandac",
+    "github": "https://github.com/JuanDAC",
+    "alias": "ase-json"
+  },
+  "template": "juandac/ase-template-script"
+}

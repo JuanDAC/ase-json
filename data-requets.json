@@ -1,0 +1,14 @@
+{
+  "questions": [{ "question": "alias of project", "id": "alias", "default": "name" }],
+  "filesToReplace": [
+    { "file": "src/constants/index.ts", "replace": ["alias"] },
+    {
+      "file": "README",
+      "replace": ["alias", "description", "author:name", "author:email", "author:url"]
+    },
+    {
+      "file": "package.json",
+      "replace": ["alias", "name", "description", "author:name", "author:email", "author:url", "github", "license"]
+    }
+  ]
+}
