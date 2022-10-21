@@ -1,8 +1,8 @@
-import { _WHITESPACE } from "./constants";
+import { _WHITESPACE } from './constants';
 
 export class JSON {
   static stringify(data: unknown, indent?: string) {
-    indent = typeof indent === 'string' ? indent : '';
+    indent = typeof indent === 'string' ? indent : '  ';
 
     let str = '';
 
@@ -32,7 +32,7 @@ export class JSON {
     } else if (typeof data === 'string') {
       str = indent + '"' + data + '"';
     } else if (typeof data === 'function') {
-      const body = data.toString().split('\n');
+      const body = String(data).split('\n');
       let offset = 0;
       const eachInString = (string: string, character: string, index = 0): number => {
         if (string.length > 0 && index < string.length) {
@@ -45,11 +45,11 @@ export class JSON {
 
       const first =
         body.find(function (ch) {
-          return ch.startsWith('\t');
+          return ch.startsWith('->');
         }) || null;
 
       if (first !== null) {
-        const check = eachInString(first, '\t');
+        const check = eachInString(first, '->');
         if (check !== null) {
           offset = Math.max(0, check - indent.length);
         }
@@ -57,7 +57,7 @@ export class JSON {
 
       for (let b = 0, bl = body.length; b < bl; b++) {
         const line = body[b];
-        if (line.startsWith('\t')) {
+        if (line.startsWith('->')) {
           str += indent + line.substring(offset);
         } else {
           str += indent + line;
@@ -87,7 +87,7 @@ export class JSON {
         str += '[\n';
 
         for (let y = 0; y < dimension; y++) {
-          str += '\t' + indent;
+          str += '->' + indent;
 
           for (let x = 0; x < dimension; x++) {
             const tmp = (data as Array<any>)[x + y * dimension].toString();
@@ -134,7 +134,7 @@ export class JSON {
         str += '[\n';
 
         for (let d = 0, dl = (data as Array<unknown>).length; d < dl; d++) {
-          str += JSON.stringify((data as Array<unknown>)[d], '\t' + indent);
+          str += JSON.stringify((data as Array<unknown>)[d], '->' + indent);
 
           if (d < dl - 1) {
             str += ',';
@@ -156,8 +156,8 @@ export class JSON {
         for (let k = 0, kl = keys.length; k < kl; k++) {
           const key = keys[k];
 
-          str += '\t' + indent + '"' + key + '": ';
-          str += JSON.stringify(data[key as keyof typeof data], '\t' + indent).trim();
+          str += '->' + indent + '"' + key + '": ';
+          str += JSON.stringify(data[key as keyof typeof data], '->' + indent).trim();
 
           if (k < kl - 1) {
             str += ',';
