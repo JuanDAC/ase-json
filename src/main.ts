@@ -32,7 +32,7 @@ export class JSON {
     } else if (typeof data === 'string') {
       str = indent + '"' + data + '"';
     } else if (typeof data === 'function') {
-      const body = String(data).split('\n');
+      const body = `${data}`.split('\n');
       let offset = 0;
       const eachInString = (string: string, character: string, index = 0): number => {
         if (string.length > 0 && index < string.length) {
