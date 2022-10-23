@@ -45,11 +45,11 @@ export class JSON {
 
       const first =
         body.find(function (ch) {
-          return ch.startsWith('');
+          return ch.startsWith(indent as string);
         }) || null;
 
       if (first !== null) {
-        const check = eachInString(first, '');
+        const check = eachInString(first, indent);
         if (check !== null) {
           offset = Math.max(0, check - indent.length);
         }
@@ -57,7 +57,7 @@ export class JSON {
 
       for (let b = 0, bl = body.length; b < bl; b++) {
         const line = body[b];
-        if (line.startsWith('')) {
+        if (line.startsWith(indent)) {
           str += indent + line.substring(offset);
         } else {
           str += indent + line;
@@ -87,7 +87,7 @@ export class JSON {
         str += '[\n';
 
         for (let y = 0; y < dimension; y++) {
-          str += '' + indent;
+          str += indent;
 
           for (let x = 0; x < dimension; x++) {
             const tmp = (data as Array<any>)[x + y * dimension].toString();
@@ -134,7 +134,7 @@ export class JSON {
         str += '[\n';
 
         for (let d = 0, dl = (data as Array<unknown>).length; d < dl; d++) {
-          str += JSON.stringify((data as Array<unknown>)[d], '' + indent);
+          str += JSON.stringify((data as Array<unknown>)[d], indent);
 
           if (d < dl - 1) {
             str += ',';
@@ -156,8 +156,8 @@ export class JSON {
         for (let k = 0, kl = keys.length; k < kl; k++) {
           const key = keys[k];
 
-          str += '' + indent + '"' + key + '": ';
-          str += JSON.stringify(data[key as keyof typeof data], '' + indent).trim();
+          str += indent + '"' + key + '": ';
+          str += JSON.stringify(data[key as keyof typeof data], indent).trim();
 
           if (k < kl - 1) {
             str += ',';
