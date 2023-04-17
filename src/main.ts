@@ -1,4 +1,9 @@
 import { _WHITESPACE } from './constants';
+interface JSONObject {
+  [key: string]: JSONValue;
+}
+
+type JSONValue = string | number | boolean | null | undefined | JSONObject | JSONValue[];
 
 export class JSON {
   static stringify(data: unknown, indent?: string) {
@@ -171,5 +176,160 @@ export class JSON {
     }
 
     return str;
+  }
+
+  static parse(json: string) {
+    let index = 0;
+
+    function parseObject(): JSONObject {
+      const object: JSONObject = {};
+      index++;
+      while (json[index] !== '}') {
+        const key = parseString();
+        index++;
+        const value = parseValue();
+        object[key] = value;
+        if (json[index] === ',') {
+          index++;
+        }
+      }
+      index++;
+      return object;
+    }
+
+    function parseArray(): JSONValue[] {
+      const array: JSONValue[] = [];
+      index++;
+      while (json[index] !== ']') {
+        const value = parseValue();
+        array.push(value);
+        if (json[index] === ',') {
+          index++;
+        }
+      }
+      index++;
+      return array;
+    }
+
+    function parseString(end = '"'): string {
+      let endIndex = index + 1;
+      while (json[endIndex] !== `${end}`) {
+        if (json[endIndex] === '\\') {
+          endIndex += 2;
+        } else {
+          endIndex++;
+        }
+      }
+      const stringValue = json.slice(index + 1, endIndex);
+      index = endIndex + 1;
+      return stringValue;
+    }
+
+    function parseValue(): JSONValue {
+      const currentChar = json[index];
+
+      if (currentChar === '{') {
+        return parseObject();
+      }
+
+      if (currentChar === '[') {
+        return parseArray();
+      }
+
+      if (currentChar === '"') {
+        return parseString('"');
+      }
+
+      if (currentChar === "'") {
+        return parseString("'");
+      }
+
+      if (
+        currentChar === 't' &&
+        json
+          .split('')
+          .slice(index, index + 4)
+          .join('') === 'true'
+      ) {
+        index += 4;
+        return true;
+      }
+
+      if (
+        currentChar === 'f' &&
+        json
+          .split('')
+          .slice(index, index + 5)
+          .join('') === 'false'
+      ) {
+        index += 5;
+        return false;
+      }
+
+      if (
+        currentChar === 'n' &&
+        json
+          .split('')
+          .slice(index, index + 4)
+          .join('') === 'null'
+      ) {
+        index += 4;
+        return null;
+      }
+
+      if (
+        currentChar === 'u' &&
+        json
+          .split('')
+          .slice(index, index + 9)
+          .join('') === 'undefined'
+      ) {
+        index += 9;
+        return undefined;
+      }
+
+      if (
+        currentChar === 'N' &&
+        json
+          .split('')
+          .slice(index, index + 3)
+          .join('') === 'NaN'
+      ) {
+        index += 3;
+        return NaN;
+      }
+
+      if (
+        currentChar === 'I' &&
+        json
+          .split('')
+          .slice(index, index + 8)
+          .join('') === 'Infinity'
+      ) {
+        index += 8;
+        return Infinity;
+      }
+
+      if (
+        currentChar === '-' &&
+        json
+          .split('')
+          .slice(index, index + 9)
+          .join('') === '-Infinity'
+      ) {
+        index += 9;
+        return -Infinity;
+      }
+
+      let endIndex = index;
+      while ('0123456789'.includes(json[endIndex])) {
+        endIndex++;
+      }
+      const numericString = json.slice(index, endIndex);
+      index = endIndex;
+      return +numericString;
+    }
+
+    return parseValue();
   }
 }
