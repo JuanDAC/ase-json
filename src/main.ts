@@ -322,12 +322,15 @@ export class JSON {
       }
 
       let endIndex = index;
+
+      if (json[endIndex] === '-') endIndex++;
+
       while ('0123456789'.includes(json[endIndex])) {
         endIndex++;
       }
       const numericString = json.slice(index, endIndex);
       index = endIndex;
-      return +numericString;
+      return Number(numericString);
     }
 
     return parseValue();
